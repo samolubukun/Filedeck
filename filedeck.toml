@@ -1,0 +1,62 @@
+# FileDeck configuration. Precedence: environment variable (FILEDECK_*) > this file > built-in default.
+# Paths may start with "~/". Leave the storage/database overrides commented out to use the
+# platform default (%LOCALAPPDATA%\filedeck on Windows, ~/.local/share/filedeck elsewhere).
+
+[storage]
+# media_root = "~/.local/share/filedeck/media"
+# consume_dir = "~/Documents/FileDeck Inbox"
+# index_dir = "~/.local/share/filedeck/index"
+
+[database]
+# Zero-config SQLite local database
+# url = "sqlite://~/.local/share/filedeck/db.sqlite3"
+
+[worker]
+url = "http://127.0.0.1:8900"
+secret = ""
+
+[ocr]
+language = "eng"
+mode = "skip_noarchive"
+
+[consumer]
+watch = true                  # watch consume_dir for new files
+delete_after_consume = true   # remove source file once ingested
+recursive = true
+enable_barcodes = true
+barcode_string = "PATCHT"     # separator page barcode value
+retain_split_pages = false
+enable_asn_barcode = true
+asn_barcode_prefix = "ASN"
+ignore_patterns = [".DS_Store", "Thumbs.db", "desktop.ini", "~$*", ".*", "*.tmp", "*.part", "*.crdownload"]
+
+subdirs_as_tags = false       # sub-directories of the consume dir become tags
+enable_collate_double_sided = false  # odd/even page scans dropped into the "double-sided" subdir are merged
+collate_double_sided_subdir = "double-sided"
+enable_tag_barcode = false    # TAG: barcodes assign tags
+tag_barcode_split = false     # start a new document at every tag barcode page
+tag_barcode_mapping = { "TAG:(.*)" = '\g<1>' }
+
+[email]
+# SMTP for "email document". Empty host = not configured. Env: FILEDECK_EMAIL_*
+host = ""
+port = 25
+user = ""
+password = ""
+from = ""
+use_tls = false   # STARTTLS
+use_ssl = false   # implicit TLS (port 465)
+
+[ai]
+enabled = false
+provider = "local"
+model_path = "~/.local/share/filedeck/models/qwen2.5-1.5b-instruct-q4_k_m.gguf"
+embedding_model = "all-MiniLM-L6-v2"
+base_url = "http://localhost:11434/v1"
+api_key = ""
+llm_model = "qwen2.5:1.5b"
+
+[app]
+title = "FileDeck"
+host = "0.0.0.0"
+port = 8080
