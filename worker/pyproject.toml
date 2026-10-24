@@ -1,0 +1,46 @@
+[project]
+name = "filedeck-worker"
+version = "0.1.0"
+description = "FileDeck Python processing worker"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.28.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.2.0",
+    "python-multipart>=0.0.9",
+    "httpx>=0.27.0",
+    "pillow>=10.2.0",
+    "pypdf>=4.1.0",
+    "scikit-learn>=1.4.0",
+    "numpy>=1.26.0",
+    "pdfplumber>=0.11.0",
+    "pypdfium2>=4.30.0",
+    "zxing-cpp>=2.2.0",
+    "rapidocr-onnxruntime>=1.4.4",
+    "reportlab>=5.1.0",
+    "pymupdf>=2.0",
+    "pymupdf4llm>=2.0",
+    "pikepdf>=10.17.0",
+    "img2pdf>=0.6.3",
+    "pdf2docx>=0.5.13",
+    "python-docx>=1.2.0",
+    "python-pptx>=1.0.2",
+    "openpyxl>=3.1.5",
+    "pillow-heif>=1.8.1",
+]
+
+[project.optional-dependencies]
+# Needs the tesseract binary (and ghostscript for ocrmypdf) on PATH; the worker degrades gracefully without them.
+ocr = ["pytesseract>=0.3.10", "ocrmypdf>=16.0.0"]
+embeddings = ["fastembed>=0.3.6,<1.0"]
+full = ["pytesseract>=0.3.10", "ocrmypdf>=16.0.0", "fastembed>=0.3.6,<1.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
