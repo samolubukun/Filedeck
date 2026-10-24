@@ -1,0 +1,59 @@
+# Build & Output Artifacts
+target/
+**/target/
+dist/
+**/dist/
+.vite/
+
+# Dependencies
+node_modules/
+**/node_modules/
+.venv/
+**/venv/
+
+# Python Cache & Bytecode
+**/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+
+# Local Vault & Databases
+vault/
+**/vault/
+*.db
+*.db-shm
+*.db-wal
+
+# AI Models & Weights
+*.gguf
+*.bin
+*.onnx
+*.pt
+*.safetensors
+worker/data/
+**/data/models/
+models/
+
+# Logs & Environment
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.local
+*.local
+
+# System & Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Planning & Scratch
+PLAN.md
+task.md
+scripts/
