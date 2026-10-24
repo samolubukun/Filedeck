@@ -46,6 +46,18 @@ Modern document apps often make you choose between privacy and convenience: onli
 
 ---
 
+## Current Snapshots
+
+| **Intuitive Analytics Dashboard** | **Rich Document Vault & Card Explorer** |
+| :---: | :---: |
+| <a href="public/dashboard.jpg"><img src="public/dashboard.jpg" alt="FileDeck Analytics Dashboard" width="100%"></a> | <a href="public/documents.jpg"><img src="public/documents.jpg" alt="Document Explorer & Grid Cards" width="100%"></a> |
+| *Real-time vault statistics, ingestion status, document format distribution, and inbox alerts.* | *Instant faceted filtering, saved views, multi-card grid, and batch operations.* |
+| **30-in-1 Offline PDF Studio** | **Real-Time Asynchronous Task Queue** |
+| <a href="public/pdf_studio.jpg"><img src="public/pdf_studio.jpg" alt="FileDeck PDF Studio" width="100%"></a> | <a href="public/task_queue.jpg"><img src="public/task_queue.jpg" alt="Background Task Queue Monitor" width="100%"></a> |
+| *Full suite of 30 local PDF tools organized 5 per row with zero external cloud dependencies.* | *Live job tracking, OCR progress, version merge status, and duplicate detection.* |
+
+---
+
 ## Core Features
 
 ### 1. Document Management & Multi-Format Ingestion
@@ -99,18 +111,6 @@ A dedicated offline workstation built directly into FileDeck with zero cloud upl
 - **100% In-App Modals**: Completely replaces native browser alert, confirm, and prompt dialogs with accessible, themed modals featuring backdrop blur, keyboard navigation (<kbd>Enter</kbd> / <kbd>Esc</kbd>), and destructive action safeguards.
 - **Fast Theme Switching**: Instant toggling between modern Dark Mode and clean Light Mode.
 - **Keyboard Shortcuts**: Quick search access via <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd>.
-
----
-
-## Current Snapshots
-
-| **Intuitive Analytics Dashboard** | **Rich Document Vault & Card Explorer** |
-| :---: | :---: |
-| <a href="public/dashboard.jpg"><img src="public/dashboard.jpg" alt="FileDeck Analytics Dashboard" width="100%"></a> | <a href="public/documents.jpg"><img src="public/documents.jpg" alt="Document Explorer & Grid Cards" width="100%"></a> |
-| *Real-time vault statistics, ingestion status, document format distribution, and inbox alerts.* | *Instant faceted filtering, saved views, multi-card grid, and batch operations.* |
-| **30-in-1 Offline PDF Studio** | **Real-Time Asynchronous Task Queue** |
-| <a href="public/pdf_studio.jpg"><img src="public/pdf_studio.jpg" alt="FileDeck PDF Studio" width="100%"></a> | <a href="public/task_queue.jpg"><img src="public/task_queue.jpg" alt="Background Task Queue Monitor" width="100%"></a> |
-| *Full suite of 30 local PDF tools organized 5 per row with zero external cloud dependencies.* | *Live job tracking, OCR progress, version merge status, and duplicate detection.* |
 
 ---
 
