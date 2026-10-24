@@ -8,6 +8,7 @@
 //! document -> index -> task result + WebSocket updates.
 
 pub mod dates;
+pub mod extras;
 pub mod office;
 pub mod watcher;
 

@@ -1,16 +1,39 @@
 //! Auto-assignment of taxonomy (tags, correspondent, document type, storage path).
 //!
-//! Algorithms: 0 none, 1 any word, 2 all words, 3 literal, 4 regex, 5 fuzzy, 6 auto (classifier).
+//! FileDeck employs an intelligent multi-strategy rule matching engine that automatically
+//! categorizes incoming documents during ingestion. Rules can match based on:
+//!
+//! | Algorithm | Constant | Description | Example |
+//! | :--- | :--- | :--- | :--- |
+//! | **None** | `MATCH_NONE` (0) | Disabled; never matches automatically | N/A |
+//! | **Any Word** | `MATCH_ANY` (1) | Matches if ANY pattern word is found | `"invoice bill receipt"` |
+//! | **All Words** | `MATCH_ALL` (2) | Matches if ALL pattern words exist | `"Amazon EMEA AWS"` |
+//! | **Exact / Literal** | `MATCH_LITERAL` (3) | Matches exact continuous sequence | `"Deutsche Telekom AG"` |
+//! | **Regular Expression** | `MATCH_REGEX` (4) | Evaluates PCRE/Rust regex pattern | `r"Invoice\s+#\d{4}"` |
+//! | **Fuzzy Matching** | `MATCH_FUZZY` (5) | Levenshtein distance ratio >= 90% | `"Siemens"` matches `"Siemons"` |
+//! | **Automatic** | `MATCH_AUTO` (6) | Driven by ML classifier prediction | Supervised model |
+//!
+//! ### Word Grouping and Quoted Expressions
+//! The engine supports quoted phrases in `MATCH_ANY` and `MATCH_ALL` modes using `"` or `'`.
+//! For instance, `"\"St. Jude\" pediatric"` requires the exact phrase "St. Jude" alongside
+//! the individual word "pediatric".
 
 use regex::RegexBuilder;
 use sqlx::{Row, SqlitePool};
 
+/// Algorithm 0: Do not match automatically.
 pub const MATCH_NONE: i64 = 0;
+/// Algorithm 1: Match if any whitespace-separated word in pattern appears in text.
 pub const MATCH_ANY: i64 = 1;
+/// Algorithm 2: Match only if all whitespace-separated words in pattern appear in text.
 pub const MATCH_ALL: i64 = 2;
+/// Algorithm 3: Match exact contiguous phrase with word boundaries.
 pub const MATCH_LITERAL: i64 = 3;
+/// Algorithm 4: Evaluate regular expression pattern.
 pub const MATCH_REGEX: i64 = 4;
+/// Algorithm 5: Levenshtein distance ratio >= 90% with length variance <= 2.
 pub const MATCH_FUZZY: i64 = 5;
+/// Algorithm 6: Defer to ML classifier prediction vector.
 pub const MATCH_AUTO: i64 = 6;
 
 /// Split like python's `shlex`-ish matching: whitespace separated, quotes group words.

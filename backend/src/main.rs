@@ -1,19 +1,9 @@
-pub mod ai;
-mod config;
-mod error;
-pub mod history;
-mod ingest;
-mod matching;
-mod routes;
-mod search;
-mod state;
-pub mod workflows;
+use filedeck_backend::config::Config;
+use filedeck_backend::ingest;
+use filedeck_backend::routes::{self, create_router};
+use filedeck_backend::search::{self, init_search_index};
+use filedeck_backend::state::AppState;
 
-
-use config::Config;
-use routes::create_router;
-use search::init_search_index;
-use state::AppState;
 use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::Arc;
