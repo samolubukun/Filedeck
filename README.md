@@ -307,6 +307,8 @@ FileDeck was built around the principle of **strict privacy**:
 
 ---
 
-## License
+## License & Contributing
 
-This project is distributed under the **MIT License**. See [LICENSE](LICENSE) for details.
+- **License**: Distributed under the **MIT License**. See [LICENSE](LICENSE) for details.
+- **Contributing**: Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md).
+- **Security**: For vulnerability reporting guidelines, review our [Security Policy](SECURITY.md).
