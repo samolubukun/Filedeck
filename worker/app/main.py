@@ -341,9 +341,11 @@ async def fetch_mail(req: MailFetchRequest):
 
 from app.routers.ai import router as ai_router  # noqa: E402
 from app.routes.pdf_studio import router as pdf_studio_router
+from app.routers.extraction import router as extraction_router
 
 app.include_router(ai_router)
 app.include_router(pdf_studio_router)
+app.include_router(extraction_router)
 
 
 if __name__ == "__main__":
