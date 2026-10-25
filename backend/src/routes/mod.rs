@@ -5,6 +5,7 @@ pub mod custom_fields;
 pub mod document_types;
 pub mod documents;
 pub mod documents_ops;
+pub mod extraction;
 pub mod mail;
 pub mod pdf_studio;
 pub mod saved_views;
@@ -249,6 +250,18 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/ai/models/download/", post(ai::download_model))
         .route("/api/ai/models/cancel/", post(ai::cancel_model_download))
         .route("/api/ai/models/", delete(ai::delete_model))
+        // Intelligent Document Processing & Data Entry
+        .route("/api/extraction/schemas/", get(extraction::list_schemas).post(extraction::create_schema))
+        .route("/api/extraction/schemas/:id/", get(extraction::get_schema).patch(extraction::update_schema).put(extraction::update_schema).delete(extraction::delete_schema))
+        .route("/api/extraction/batches/", get(extraction::list_batches).post(extraction::create_batch))
+        .route("/api/extraction/batches/:id/", get(extraction::get_batch))
+        .route("/api/extraction/batches/:id/grid/", get(extraction::get_batch_grid))
+        .route("/api/extraction/batches/:id/process/", post(extraction::process_batch))
+        .route("/api/extraction/batches/:id/export/", get(extraction::export_batch_excel))
+        .route("/api/extraction/cells/:id/", patch(extraction::update_cell))
+        .route("/api/extraction/records/:id/approve/", post(extraction::approve_record))
+        .route("/api/scanner/devices/", get(extraction::list_scanner_devices))
+        .route("/api/scanner/scan/", post(extraction::trigger_scan))
         .merge(documents_ops::router())
         .merge(crud_extra::router())
         .merge(pdf_studio::router())
