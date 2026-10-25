@@ -8,26 +8,31 @@
 </div>
 
 <p align="center">
-  <a href="#architecture"><img src="https://img.shields.io/badge/Architecture-Rust%20%2B%20Python%20Worker-orange?style=for-the-badge&logo=rust" alt="Rust Backend"></a>
-  <a href="#features"><img src="https://img.shields.io/badge/Privacy-100%25%20Offline%20%7C%20Zero%20Telemetry-blueviolet?style=for-the-badge" alt="100% Offline"></a>
-  <a href="#pdf-studio"><img src="https://img.shields.io/badge/PDF%20Studio-30%20Local%20Tools-blue?style=for-the-badge" alt="30 PDF Tools"></a>
-  <a href="#desktop-app"><img src="https://img.shields.io/badge/Desktop%20App-Tauri%20(In%20Progress)-24C8D8?style=for-the-badge&logo=tauri&logoColor=white" alt="Tauri Desktop"></a>
-  <a href="#stack"><img src="https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite%20%2B%20TS-61DAFB?style=for-the-badge&logo=react" alt="React"></a>
+  <img src="https://img.shields.io/badge/RUST-AXUM%200.7-E05D44?style=for-the-badge&logo=rust&logoColor=white" alt="Rust Axum">
+  <img src="https://img.shields.io/badge/REACT-18%20%2B%20VITE-06B6D4?style=for-the-badge&logo=react&logoColor=white" alt="React 18">
+  <img src="https://img.shields.io/badge/QWEN%202.5-LOCAL%201.5B%20AI-8B5CF6?style=for-the-badge&logo=huggingface&logoColor=white" alt="Qwen 2.5">
+  <img src="https://img.shields.io/badge/TAURI-DESKTOP%20APP-24C8D8?style=for-the-badge&logo=tauri&logoColor=white" alt="Tauri">
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Backend-Rust%20Axum%20%2F%20Tokio-black?logo=rust" alt="Rust">
-  <img src="https://img.shields.io/badge/Worker-Python%203.12%20%2F%20FastAPI-3776AB?logo=python" alt="Python">
-  <img src="https://img.shields.io/badge/Search-Tantivy%20BM25-red" alt="Tantivy">
-  <img src="https://img.shields.io/badge/Database-SQLite%20(WAL%20Mode)-003B57?logo=sqlite" alt="SQLite">
-  <img src="https://img.shields.io/badge/AI%20Inference-Qwen%202.5%20(1.5B)%20GGUF-purple" alt="Local AI">
+  <img src="https://img.shields.io/badge/PRIVACY-100%25%20OFFLINE-6366F1?style=for-the-badge&logo=shield&logoColor=white" alt="100% Offline">
+  <img src="https://img.shields.io/badge/PDF%20STUDIO-30%20TOOLS-EC4899?style=for-the-badge&logo=adobeacrobatreader&logoColor=white" alt="PDF Studio">
+  <img src="https://img.shields.io/badge/IDP-DATA%20ENTRY-10B981?style=for-the-badge&logo=microsoftexcel&logoColor=white" alt="IDP Data Entry">
+  <img src="https://img.shields.io/badge/TANTIVY-BM25%20SEARCH-EF4444?style=for-the-badge&logo=apachelucene&logoColor=white" alt="Tantivy Search">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/SQLITE-WAL%20MODE-0284C7?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite WAL">
+  <img src="https://img.shields.io/badge/FASTAPI-PYTHON%203.12-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/RAPID%20OCR-ONNX%20RUNTIME-2563EB?style=for-the-badge&logo=onnx&logoColor=white" alt="Rapid OCR">
+  <img src="https://img.shields.io/badge/EXCEL-STYLED%20XLSX-107C41?style=for-the-badge&logo=openpyxl&logoColor=white" alt="Excel Export">
 </p>
 
 ---
 
 ## Description
 
-**FileDeck** is a fast, 100% offline document workspace that keeps all your files organized, searchable, and completely private on your own computer. Whether you are managing bills, receipts, contracts, tax records, or research decks, FileDeck automatically reads text from scans and images, organizes your paperwork with smart tags and senders, and lets you find anything in seconds with instant search. It also comes with an all-in-one studio of **30 handy PDF tools** that let you merge, split, compress, protect, watermark, and convert documents right on your machine with zero internet required.
+**FileDeck** is a fast, 100% offline document workspace that keeps all your files organized, searchable, and completely private on your own computer. Whether you are managing bills, receipts, contracts, tax records, or research decks, FileDeck automatically reads text from scans and images, organizes your paperwork with smart tags and senders, and lets you query your documents using a **private, local AI assistant**. It also features an **Intelligent Document Processing (IDP) workspace** to batch-extract structured fields directly into verified Excel spreadsheets, alongside an all-in-one studio of **30 offline PDF tools** to merge, split, compress, protect, and convert documents with zero cloud dependencies.
 
 ---
 
@@ -48,13 +53,13 @@ Modern document apps often make you choose between privacy and convenience: onli
 
 ## Current Snapshots
 
-| **Intuitive Analytics Dashboard** | **Rich Document Vault & Card Explorer** |
+| **Dashboard** | **Document Explorer** |
 | :---: | :---: |
-| <a href="public/dashboard.jpg"><img src="public/dashboard.jpg" alt="FileDeck Analytics Dashboard" width="100%"></a> | <a href="public/documents.jpg"><img src="public/documents.jpg" alt="Document Explorer & Grid Cards" width="100%"></a> |
-| *Real-time vault statistics, ingestion status, document format distribution, and inbox alerts.* | *Instant faceted filtering, saved views, multi-card grid, and batch operations.* |
-| **30-in-1 Offline PDF Studio** | **Real-Time Asynchronous Task Queue** |
-| <a href="public/pdf_studio.jpg"><img src="public/pdf_studio.jpg" alt="FileDeck PDF Studio" width="100%"></a> | <a href="public/task_queue.jpg"><img src="public/task_queue.jpg" alt="Background Task Queue Monitor" width="100%"></a> |
-| *Full suite of 30 local PDF tools organized 5 per row with zero external cloud dependencies.* | *Live job tracking, OCR progress, version merge status, and duplicate detection.* |
+| <a href="public/dashboard.jpg"><img src="public/dashboard.jpg" alt="Dashboard Screenshot" width="100%"></a> | <a href="public/documents.jpg"><img src="public/documents.jpg" alt="Document Explorer Screenshot" width="100%"></a> |
+| **Data Entry & IDP Workspace** | **PDF Studio** |
+| <a href="public/data_entry.png"><img src="public/data_entry.png" alt="Data Entry & IDP Workspace Screenshot" width="100%"></a> | <a href="public/pdf_studio.jpg"><img src="public/pdf_studio.jpg" alt="PDF Studio Screenshot" width="100%"></a> |
+| **Ask AI Assistant** | **Task Queue** |
+| <a href="public/ask_ai.jpg"><img src="public/ask_ai.jpg" alt="Ask AI Assistant Screenshot" width="100%"></a> | <a href="public/task_queue.jpg"><img src="public/task_queue.jpg" alt="Task Queue Screenshot" width="100%"></a> |
 
 ---
 
@@ -68,7 +73,13 @@ Modern document apps often make you choose between privacy and convenience: onli
 - **Configurable Saved Views**: Create, save, and pin customized filtered queries directly into the primary navigation sidebar.
 - **Bulk Operations**: In-app bulk edit, tag assignment, multi-file re-OCR, version merging, and batch ZIP export.
 
-### 2. 30-in-1 Native PDF Studio
+### 2. Intelligent Document Processing (IDP) & Data Entry Workspace
+- **Schema-Driven Extraction**: Define schemas with column types (monetary, date, string, integer), validation rules, and regex patterns.
+- **Virtualized Review Grid**: Human-in-the-loop review interface with click-to-source bounding box inspection and inline cell editing.
+- **Hardware Scanner Bridge**: Direct integration with office document scanners (WIA / NAPS2 CLI) for automated ADF batch scanning.
+- **Spreadsheet Export**: Direct export to styled `.xlsx` workbooks and RFC 4180 CSV with UTF-8 BOM for Microsoft Excel.
+
+### 3. 30-in-1 Native PDF Studio
 A dedicated offline workstation built directly into FileDeck with zero cloud upload limits or subscription gates:
 
 | Category | Available Tools |
@@ -80,34 +91,34 @@ A dedicated offline workstation built directly into FileDeck with zero cloud upl
 | **Security & Legal** | **Protect PDF** (AES password encryption), **Unlock PDF**, **Redact PDF** (permanent blackout), **Sign PDF** (digital/visual stamp), **PDF to PDF/A** (long-term preservation) |
 | **Edit & Annotate** | **Watermark PDF** (text/image with custom opacity and angles), **Page Numbers** (custom positions & formats), **Edit PDF**, **Compare PDF** (diff side-by-side), **PDF Metadata** (title, author, subject) |
 
-### 3. Local Search & AI Intelligence
+### 4. Local Search & AI Intelligence
 - **Tantivy Full-Text Search**: In-memory BM25 index over all document OCR text, titles, correspondents, and tags with instantaneous results.
 - **Offline AI Assistant ("Ask AI")**: Powered by a local Qwen 2.5 (1.5B Instruct) model running directly on your CPU. Ask natural language questions about your documents without internet access.
 - **Vector Embeddings**: Local BGE embedding model for semantic similarity clustering and related document suggestions with offline hash fallback.
 
-### 4. Interactive Document Drawer & Version Control
+### 5. Interactive Document Drawer & Version Control
 - **Document Detail Drawer**: Inline PDF viewer, full document metadata editor, and searchable text inspector.
 - **Revision History**: Upload new revisions, track document versions, and roll back or download any previous version.
 - **Archive Serial Number (ASN)**: Automatic sequential barcode and physical filing number generator.
 - **Notes Timeline**: Add timestamped private notes and annotations directly to any document record.
 
-### 5. Taxonomy & Custom Metadata Engine
+### 6. Taxonomy & Custom Metadata Engine
 - **Tags**: Color-coded taxonomy labels for organizing documents across projects and categories.
 - **Correspondents**: Track senders, recipients, and institutions associated with incoming documents.
 - **Document Types**: Classify documents into structured types (Invoices, Receipts, Bank Statements, Contracts).
 - **Dynamic Storage Paths**: Rule-based directory formatter (`{created_year}/{correspondent}/{title}`) with simulated breadcrumb previews.
 - **Custom Metadata Fields**: Define custom data fields across 8 types (Text, URL, Date, Boolean, Integer, Float, Monetary, and DocumentLink).
 
-### 6. Workflow Automations & Mail Fetcher
+### 7. Workflow Automations & Mail Fetcher
 - **Workflow Automation Engine**: Trigger automated actions (tag assignment, correspondent tagging, title formatting, storage path assignment) on document ingestion.
 - **IMAP/POP3 Mail Fetcher**: Periodically scans configured email accounts, extracts PDF attachments, and ingests them directly into your inbox.
 
-### 7. Operations, Task Queue & 30-Day Trash Bin
+### 8. Operations, Task Queue & 30-Day Trash Bin
 - **Live Task Queue**: Monitor background ingestion, OCR progress, task duration, retry failed jobs, and acknowledge completions.
 - **30-Day Safety Trash**: Soft-delete safety net holding deleted items for 30 days with one-click restore and permanent purge safeguards.
 - **Audit Logs Viewer**: Full operational trace viewer for backend diagnostics, watcher events, and system activities.
 
-### 8. UI Experience & Unified In-App Modals
+### 9. UI Experience & Unified In-App Modals
 - **100% In-App Modals**: Completely replaces native browser alert, confirm, and prompt dialogs with accessible, themed modals featuring backdrop blur, keyboard navigation (<kbd>Enter</kbd> / <kbd>Esc</kbd>), and destructive action safeguards.
 - **Fast Theme Switching**: Instant toggling between modern Dark Mode and clean Light Mode.
 - **Keyboard Shortcuts**: Quick search access via <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd>.
