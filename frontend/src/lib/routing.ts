@@ -5,6 +5,9 @@ const HASH_TO_NAV: Record<string, NavView> = {
   '#': 'dashboard',
   '': 'dashboard',
   '#/documents': 'documents',
+  '#/data-entry': 'data_entry',
+  '#/data_entry': 'data_entry',
+  '#/idp': 'data_entry',
   '#/pdf-studio': 'pdf_studio',
   '#/pdf_studio': 'pdf_studio',
   '#/views': 'saved_views',
@@ -29,6 +32,7 @@ const HASH_TO_NAV: Record<string, NavView> = {
 const NAV_TO_HASH: Record<NavView, string> = {
   dashboard: '#/',
   documents: '#/documents',
+  data_entry: '#/data-entry',
   pdf_studio: '#/pdf-studio',
   saved_views: '#/views',
   chat: '#/chat',

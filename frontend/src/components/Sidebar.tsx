@@ -21,6 +21,7 @@ import {
   ChevronDown,
   Filter,
   FileText,
+  TableProperties,
   X,
 } from 'lucide-react'
 import { useUiStore } from '../store/useUiStore'
@@ -250,6 +251,30 @@ export function Sidebar() {
                 }}
               >
                 {totalDocs}
+              </span>
+            </>
+          )}
+        </NavButton>
+
+        <NavButton view="data_entry" primary title="Data Entry & IDP">
+          <TableProperties size={17} style={{ color: '#10b981' }} />
+          {!sidebarCollapsed && (
+            <>
+              <span>Data Entry</span>
+              <span
+                style={{
+                  marginLeft: 'auto',
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.04em',
+                  background: 'rgba(16, 185, 129, 0.15)',
+                  color: '#10b981',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  padding: '1px 7px',
+                  borderRadius: 'var(--radius-full)',
+                }}
+              >
+                IDP
               </span>
             </>
           )}

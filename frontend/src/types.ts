@@ -89,6 +89,7 @@ export interface TaskItem {
 export type NavView =
   | 'dashboard'
   | 'documents'
+  | 'data_entry'
   | 'pdf_studio'
   | 'saved_views'
   | 'chat'
@@ -103,6 +104,73 @@ export type NavView =
   | 'trash'
   | 'logs'
   | 'settings'
+
+export interface ExtractionColumn {
+  key: string
+  label: string
+  type: 'string' | 'number' | 'date' | 'monetary' | 'boolean'
+  required?: boolean
+  regex?: string
+  hints?: string[]
+}
+
+export interface ExtractionSchema {
+  id: number
+  name: string
+  description?: string
+  document_type_id?: number | null
+  columns: ExtractionColumn[]
+  validation_rules?: any[]
+  created_at?: string
+  updated_at?: string
+}
+
+export interface ExtractionBatch {
+  id: number
+  schema_id: number
+  schema_name: string
+  title: string
+  status: 'queued' | 'processing' | 'needs_review' | 'completed' | 'failed' | string
+  total_documents: number
+  processed_documents: number
+  flagged_fields_count: number
+  created_at: string
+  completed_at?: string | null
+}
+
+export interface ExtractionCell {
+  id: number
+  raw_value?: string | null
+  value?: string | null
+  data_type: string
+  confidence: number
+  page_number: number
+  bbox?: [number, number, number, number] | null
+  is_reviewed: boolean
+  validation_error?: string | null
+}
+
+export interface ExtractionRow {
+  record_id: number
+  document_id?: number | null
+  filename: string
+  status: 'pending' | 'extracted' | 'needs_review' | 'approved' | 'error' | string
+  confidence_score: number
+  error_message?: string | null
+  cells: Record<string, ExtractionCell>
+}
+
+export interface BatchGridData {
+  batch_id: number
+  title: string
+  status: string
+  total_documents: number
+  processed_documents: number
+  flagged_fields_count: number
+  columns: ExtractionColumn[]
+  validation_rules?: any[]
+  rows: ExtractionRow[]
+}
 
 export type ViewMode = 'table' | 'cards' | 'large_cards'
 

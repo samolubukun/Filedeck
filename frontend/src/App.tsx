@@ -21,6 +21,7 @@ import { SavedViews } from './pages/SavedViews'
 import { Workflows } from './pages/Workflows'
 import { Mail } from './pages/Mail'
 import { PdfStudio } from './pages/PdfStudio'
+import { DataEntry } from './pages/DataEntry'
 import { useUiStore } from './store/useUiStore'
 import { useDocuments, useRefreshAll } from './api/useDocuments'
 import { useTags } from './api/useTags'
@@ -33,6 +34,7 @@ import type { NavView } from './types'
 const PAGES: Record<NavView, ComponentType> = {
   dashboard: Dashboard,
   documents: Documents,
+  data_entry: DataEntry,
   pdf_studio: PdfStudio,
   saved_views: SavedViews,
   chat: Chat,
