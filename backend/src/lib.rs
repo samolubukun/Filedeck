@@ -14,4 +14,5 @@ pub mod matching;
 pub mod routes;
 pub mod search;
 pub mod state;
+pub mod server;
 pub mod workflows;
