@@ -1,0 +1,101 @@
+name: Release Standalone Desktop App (Tauri v2)
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'windows-latest'
+            target: 'x86_64-pc-windows-msvc'
+            python_bin: 'python'
+            worker_ext: '.exe'
+          - platform: 'macos-latest'
+            target: 'aarch64-apple-darwin'
+            python_bin: 'python3'
+            worker_ext: ''
+          - platform: 'ubuntu-22.04'
+            target: 'x86_64-unknown-linux-gnu'
+            python_bin: 'python3'
+            worker_ext: ''
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python worker dependencies & PyInstaller
+        run: |
+          ${{ matrix.python_bin }} -m pip install --upgrade pip
+          ${{ matrix.python_bin }} -m pip install -r worker/requirements.txt
+          ${{ matrix.python_bin }} -m pip install pyinstaller
+
+      - name: Freeze standalone Python worker
+        run: |
+          ${{ matrix.python_bin }} worker/build_worker.py
+
+      - name: Verify standalone worker binary
+        shell: bash
+        run: |
+          ls -la src-tauri/resources/worker/
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            backend
+            src-tauri
+
+      - name: Install Linux system dependencies (Ubuntu)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Build Tauri desktop application
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'FileDeck ${{ github.ref_name }}'
+          releaseBody: 'FileDeck Standalone Desktop Application with bundled zero-install worker & offline search engine.'
+          releaseDraft: true
+          prerelease: false
+          projectPath: './frontend'
