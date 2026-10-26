@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*.*.*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release Tag (e.g. v0.1.0)'
+        required: false
+        default: 'v0.1.0'
 
 permissions:
   contents: write
@@ -93,9 +98,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: 'FileDeck ${{ github.ref_name }}'
+          tagName: ${{ github.event.inputs.tag || github.ref_name }}
+          releaseName: 'FileDeck ${{ github.event.inputs.tag || github.ref_name }}'
           releaseBody: 'FileDeck Standalone Desktop Application with bundled zero-install worker & offline search engine.'
           releaseDraft: true
           prerelease: false
-          projectPath: './frontend'
+          projectPath: '.'
+          tauriScript: 'node ./frontend/node_modules/@tauri-apps/cli/tauri.js'
+          args: --target ${{ matrix.target }}
