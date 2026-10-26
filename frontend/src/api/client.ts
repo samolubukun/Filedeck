@@ -177,12 +177,14 @@ export const api = {
     id: number,
     message: string,
     history: Array<{ role: string; content: string }>,
-    onDelta: (chunk: string) => void
+    onDelta: (chunk: string) => void,
+    signal?: AbortSignal
   ): Promise<string> => {
     const res = await fetch(`${API_BASE}/documents/${id}/chat/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, history, stream: true }),
+      signal,
     })
     if (!res.ok) throw new Error('Chat request failed')
     const reader = res.body?.getReader()
@@ -219,12 +221,14 @@ export const api = {
   chatGlobalStream: async (
     message: string,
     history: Array<{ role: string; content: string }>,
-    onDelta: (chunk: string) => void
+    onDelta: (chunk: string) => void,
+    signal?: AbortSignal
   ): Promise<string> => {
     const res = await fetch(`${API_BASE}/chat/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, history, stream: true }),
+      signal,
     })
     if (!res.ok) throw new Error('Global chat request failed')
     const reader = res.body?.getReader()
@@ -380,6 +384,17 @@ export const api = {
   }) => apiFetch<any>('/pdf/save-as-new-document/', { method: 'POST', body: JSON.stringify(data) }),
   savePdfAsVersion: (docId: number, data: { output_id: string; version_label?: string }) =>
     apiFetch<any>(`/documents/${docId}/save-pdf-version/`, { method: 'POST', body: JSON.stringify(data) }),
+
+  // Share Links
+  createShareLink: (data: { document: number; expiry_hours?: number }) =>
+    apiFetch<{ id: number; slug: string; expiration?: string }>('/share_links/', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  getShareLinks: () =>
+    apiFetch<{ count: number; results: any[] }>('/share_links/'),
+  deleteShareLink: (id: number) =>
+    apiFetch<void>(`/share_links/${id}/`, { method: 'DELETE' }),
 }
 
 export interface ModelStatus {

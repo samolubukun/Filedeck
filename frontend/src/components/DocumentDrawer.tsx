@@ -22,6 +22,9 @@ import {
   RotateCw,
   Eye,
   Wrench,
+  Share2,
+  Square,
+  Link as LinkIcon,
 } from 'lucide-react'
 import { api } from '../api/client'
 import type { DocumentItem, TaxonomyItem, DocumentHistoryItem } from '../types'
@@ -94,6 +97,14 @@ export const DocumentDrawer: React.FC<DocumentDrawerProps> = ({
   const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'assistant'; content: string }>>([])
   const [chatInput, setChatInput] = useState('')
   const [chatStreaming, setChatStreaming] = useState(false)
+  const [chatAbortController, setChatAbortController] = useState<AbortController | null>(null)
+
+  // Share link state
+  const [shareModalOpen, setShareModalOpen] = useState(false)
+  const [shareExpiryHours, setShareExpiryHours] = useState(24)
+  const [shareSlug, setShareSlug] = useState<string | null>(null)
+  const [shareCopied, setShareCopied] = useState(false)
+  const [shareLoading, setShareLoading] = useState(false)
 
   // Tables state
   const [tables, setTables] = useState<Array<{ page: number; index: number; rows: string[][] }>>([])
@@ -201,6 +212,9 @@ export const DocumentDrawer: React.FC<DocumentDrawerProps> = ({
 
     setChatMessages((prev) => [...prev, { role: 'assistant', content: '' }])
 
+    const controller = new AbortController()
+    setChatAbortController(controller)
+
     try {
       await api.chatDocumentStream(
         doc.id,
@@ -215,20 +229,55 @@ export const DocumentDrawer: React.FC<DocumentDrawerProps> = ({
             }
             return updated
           })
-        }
+        },
+        controller.signal
       )
     } catch (err: any) {
-      setChatMessages((prev) => {
-        const updated = [...prev]
-        const last = updated[updated.length - 1]
-        if (last && last.role === 'assistant') {
-          last.content = `Error: ${err.message || 'Failed to get AI response'}`
-        }
-        return updated
-      })
+      if (err.name !== 'AbortError') {
+        setChatMessages((prev) => {
+          const updated = [...prev]
+          const last = updated[updated.length - 1]
+          if (last && last.role === 'assistant') {
+            last.content = `Error: ${err.message || 'Failed to get AI response'}`
+          }
+          return updated
+        })
+      }
     } finally {
       setChatStreaming(false)
+      setChatAbortController(null)
     }
+  }
+
+  const handleStopChat = () => {
+    if (chatAbortController) {
+      chatAbortController.abort()
+      setChatAbortController(null)
+    }
+    setChatStreaming(false)
+  }
+
+  const handleCreateShareLink = async () => {
+    if (!doc) return
+    setShareLoading(true)
+    try {
+      const res = await api.createShareLink({ document: doc.id, expiry_hours: shareExpiryHours })
+      if (res && res.slug) {
+        setShareSlug(res.slug)
+      }
+    } catch (err: any) {
+      alertModal({ title: 'Share Error', message: err?.message || 'Failed to create share link', type: 'error' })
+    } finally {
+      setShareLoading(false)
+    }
+  }
+
+  const handleCopyShareLink = () => {
+    if (!shareSlug) return
+    const url = `${window.location.origin}/share/${shareSlug}/`
+    navigator.clipboard.writeText(url)
+    setShareCopied(true)
+    setTimeout(() => setShareCopied(false), 2000)
   }
 
   const copyTableAsCsv = (rows: string[][], idx: number) => {
@@ -476,8 +525,10 @@ export const DocumentDrawer: React.FC<DocumentDrawerProps> = ({
 
   const handleNextAsn = async () => {
     try {
-      const res = await api.getNextAsn()
-      if (res && res.next_asn != null) {
+      const res: any = await api.getNextAsn()
+      if (typeof res === 'number') {
+        setAsn(String(res))
+      } else if (res && res.next_asn != null) {
         setAsn(String(res.next_asn))
       }
     } catch (err: any) {
@@ -684,6 +735,27 @@ export const DocumentDrawer: React.FC<DocumentDrawerProps> = ({
                   title="Open in PDF Studio to compress, watermark, sign, redact, or edit"
                 >
                   <Wrench size={14} style={{ color: '#ec4899' }} /> PDF Studio
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    setShareSlug(null)
+                    setShareModalOpen(true)
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '0.82rem',
+                    padding: '6px 12px',
+                    color: 'var(--accent-primary)',
+                    borderColor: 'rgba(59, 130, 246, 0.3)',
+                  }}
+                  title="Create public share link"
+                >
+                  <Share2 size={14} /> Share
                 </button>
               </>
             )}
@@ -1001,6 +1073,69 @@ export const DocumentDrawer: React.FC<DocumentDrawerProps> = ({
                                         setCustomFieldValues((prev) => ({ ...prev, [cf.id]: e.target.value }))
                                       }
                                     />
+                                  ) : cf.data_type === 'boolean' ? (
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', height: '32px' }}>
+                                      <input
+                                        type="checkbox"
+                                        checked={Boolean(currentVal)}
+                                        onChange={(e) =>
+                                          setCustomFieldValues((prev) => ({ ...prev, [cf.id]: e.target.checked }))
+                                        }
+                                        style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                                      />
+                                      <span style={{ fontSize: '0.82rem', color: currentVal ? '#10b981' : 'var(--text-muted)', fontWeight: 600 }}>
+                                        {currentVal ? '✓ Yes / Active' : '✗ No / Inactive'}
+                                      </span>
+                                    </label>
+                                  ) : cf.data_type === 'url' ? (
+                                    <div style={{ display: 'flex', gap: '6px' }}>
+                                      <input
+                                        type="url"
+                                        className="input"
+                                        style={{ height: '32px', fontSize: '0.85rem', flex: 1 }}
+                                        placeholder="https://..."
+                                        value={currentVal}
+                                        onChange={(e) =>
+                                          setCustomFieldValues((prev) => ({ ...prev, [cf.id]: e.target.value }))
+                                        }
+                                      />
+                                      {currentVal && (
+                                        <a
+                                          href={currentVal}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="btn btn-secondary"
+                                          style={{ padding: '0 8px', display: 'flex', alignItems: 'center', height: '32px' }}
+                                          title="Open link in new tab"
+                                        >
+                                          <ExternalLink size={13} />
+                                        </a>
+                                      )}
+                                    </div>
+                                  ) : cf.data_type === 'documentlink' ? (
+                                    <div style={{ display: 'flex', gap: '6px' }}>
+                                      <input
+                                        type="number"
+                                        className="input"
+                                        style={{ height: '32px', fontSize: '0.85rem', flex: 1 }}
+                                        placeholder="Doc ID #"
+                                        value={currentVal || ''}
+                                        onChange={(e) =>
+                                          setCustomFieldValues((prev) => ({ ...prev, [cf.id]: e.target.value ? parseInt(e.target.value, 10) : '' }))
+                                        }
+                                      />
+                                      {currentVal && onNavigate && (
+                                        <button
+                                          type="button"
+                                          className="btn btn-secondary"
+                                          style={{ padding: '0 8px', height: '32px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                          onClick={() => onNavigate(parseInt(currentVal, 10))}
+                                          title={`Navigate to document #${currentVal}`}
+                                        >
+                                          <LinkIcon size={12} /> #{currentVal}
+                                        </button>
+                                      )}
+                                    </div>
                                   ) : cf.data_type === 'integer' || cf.data_type === 'float' ? (
                                     <input
                                       type="number"
@@ -1227,14 +1362,25 @@ export const DocumentDrawer: React.FC<DocumentDrawerProps> = ({
                           disabled={chatStreaming}
                           style={{ flex: 1 }}
                         />
-                        <button
-                          type="submit"
-                          className="btn btn-primary"
-                          disabled={chatStreaming || !chatInput.trim()}
-                          style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                        >
-                          <Send size={16} /> Send
-                        </button>
+                        {chatStreaming ? (
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={handleStopChat}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.4)' }}
+                          >
+                            <Square size={14} fill="#ef4444" /> Stop
+                          </button>
+                        ) : (
+                          <button
+                            type="submit"
+                            className="btn btn-primary"
+                            disabled={!chatInput.trim()}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                          >
+                            <Send size={16} /> Send
+                          </button>
+                        )}
                       </form>
                     </div>
                   )}
@@ -1671,6 +1817,130 @@ export const DocumentDrawer: React.FC<DocumentDrawerProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Share Link Modal */}
+        {shareModalOpen && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.65)',
+              zIndex: 1100,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={() => setShareModalOpen(false)}
+          >
+            <div
+              className="card-panel"
+              style={{
+                width: '460px',
+                padding: '24px',
+                borderRadius: 'var(--radius-lg)',
+                backgroundColor: 'var(--bg-secondary)',
+                border: '1px solid var(--border-subtle)',
+                boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Share2 size={18} style={{ color: 'var(--accent-primary)' }} />
+                  <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>Public Share Link</h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShareModalOpen(false)}
+                  style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: 1.4 }}>
+                Generate an unauthenticated read-only link for <strong>{doc?.title}</strong>. Anyone with this link can view the document preview.
+              </p>
+
+              {!shareSlug ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '6px' }}>
+                      Expiration Duration
+                    </label>
+                    <select
+                      className="input"
+                      value={shareExpiryHours}
+                      onChange={(e) => setShareExpiryHours(parseInt(e.target.value, 10))}
+                    >
+                      <option value={1}>1 hour</option>
+                      <option value={24}>24 hours (1 day)</option>
+                      <option value={72}>72 hours (3 days)</option>
+                      <option value={168}>7 days</option>
+                      <option value={720}>30 days</option>
+                    </select>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleCreateShareLink}
+                    disabled={shareLoading}
+                    style={{ width: '100%', justifyContent: 'center', padding: '10px' }}
+                  >
+                    {shareLoading ? 'Generating Link...' : 'Create Share Link'}
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '6px' }}>
+                      Shareable URL
+                    </label>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <input
+                        type="text"
+                        readOnly
+                        className="input"
+                        value={`${window.location.origin}/share/${shareSlug}/`}
+                        style={{ fontSize: '0.82rem', fontFamily: 'monospace' }}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={handleCopyShareLink}
+                        style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0 12px' }}
+                      >
+                        {shareCopied ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
+                        {shareCopied ? 'Copied' : 'Copy'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '8px' }}>
+                    <a
+                      href={`/share/${shareSlug}/`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-secondary"
+                      style={{ fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    >
+                      <ExternalLink size={13} /> Open Page
+                    </a>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => setShareModalOpen(false)}
+                      style={{ fontSize: '0.82rem' }}
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

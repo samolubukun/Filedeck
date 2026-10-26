@@ -9,6 +9,7 @@ import {
   AlertCircle,
   XCircle,
   RefreshCw,
+  Square,
 } from 'lucide-react'
 import { api, type ModelStatus } from '../api/client'
 
@@ -27,6 +28,7 @@ export const Chat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [streaming, setStreaming] = useState(false)
+  const [abortController, setAbortController] = useState<AbortController | null>(null)
   const [modelStatus, setModelStatus] = useState<ModelStatus | null>(null)
   const [actionLoading, setActionLoading] = useState(false)
 
@@ -103,6 +105,9 @@ export const Chat: React.FC = () => {
     setInput('')
     setStreaming(true)
 
+    const controller = new AbortController()
+    setAbortController(controller)
+
     // Add empty assistant response to stream into
     setMessages((prev) => [...prev, { role: 'assistant', content: '' }])
 
@@ -119,20 +124,32 @@ export const Chat: React.FC = () => {
             }
             return updated
           })
-        }
+        },
+        controller.signal
       )
     } catch (err: any) {
-      setMessages((prev) => {
-        const updated = [...prev]
-        const last = updated[updated.length - 1]
-        if (last && last.role === 'assistant') {
-          last.content = `Error: ${err.message || 'AI service is currently offline or unreachable.'}`
-        }
-        return updated
-      })
+      if (err.name !== 'AbortError') {
+        setMessages((prev) => {
+          const updated = [...prev]
+          const last = updated[updated.length - 1]
+          if (last && last.role === 'assistant') {
+            last.content = `Error: ${err.message || 'AI service is currently offline or unreachable.'}`
+          }
+          return updated
+        })
+      }
     } finally {
       setStreaming(false)
+      setAbortController(null)
     }
+  }
+
+  const handleStop = () => {
+    if (abortController) {
+      abortController.abort()
+      setAbortController(null)
+    }
+    setStreaming(false)
   }
 
   const isModelReady = modelStatus?.is_ready ?? false
@@ -467,14 +484,26 @@ export const Chat: React.FC = () => {
           disabled={streaming || !isModelReady}
           style={{ flex: 1, padding: '12px 18px', fontSize: '0.9rem' }}
         />
-        <button
-          className="btn btn-primary"
-          onClick={() => handleSend()}
-          disabled={streaming || !input.trim() || !isModelReady}
-          style={{ padding: '0 24px', opacity: !isModelReady ? 0.6 : 1 }}
-        >
-          <Send size={18} />
-        </button>
+        {streaming ? (
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleStop}
+            style={{ padding: '0 20px', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.4)', display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            <Square size={16} fill="#ef4444" /> Stop
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => handleSend()}
+            disabled={!input.trim() || !isModelReady}
+            style={{ padding: '0 24px', opacity: !isModelReady ? 0.6 : 1 }}
+          >
+            <Send size={18} />
+          </button>
+        )}
       </div>
     </div>
   )

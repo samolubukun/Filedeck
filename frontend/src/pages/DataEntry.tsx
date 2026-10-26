@@ -792,53 +792,65 @@ export function DataEntry() {
                 {activeRow ? (
                   <div
                     style={{
-                      width: '320px',
-                      height: '440px',
+                      width: '360px',
+                      minHeight: '480px',
                       backgroundColor: '#ffffff',
                       borderRadius: '6px',
                       boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5)',
                       position: 'relative',
-                      padding: '24px 20px',
-                      boxSizing: 'border-box',
-                      color: '#1e293b',
-                      fontSize: '0.72rem',
-                      fontFamily: 'monospace',
-                      userSelect: 'none',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      flexDirection: 'column',
                     }}
                   >
-                    {/* Simulated Document Layout */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #0f172a', paddingBottom: '8px', marginBottom: '14px' }}>
-                      <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#0f172a' }}>OFFICIAL RECORD</span>
-                      <span style={{ color: '#64748b' }}>DOC-{activeRow.record_id}</span>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', opacity: 0.85 }}>
-                      <div>FILE: {activeRow.filename}</div>
-                      <div>DATE: 2026-10-25</div>
-                      <div style={{ height: '1px', backgroundColor: '#e2e8f0', margin: '6px 0' }} />
-                      <div>LINE ITEM 01 ............ $1,240.00</div>
-                      <div>LINE ITEM 02 ............ $450.50</div>
-                      <div>TAX (VAT 8%) ........... $135.24</div>
-                      <div style={{ fontWeight: 700, marginTop: '8px' }}>TOTAL AMOUNT: $1,825.74</div>
-                    </div>
-
-                    {/* Animated Highlighting Bounding Box */}
-                    {activeCell?.bbox && (
-                      <div
-                        style={{
-                          position: 'absolute',
-                          left: `${activeCell.bbox[0] * 100}%`,
-                          top: `${activeCell.bbox[1] * 100}%`,
-                          width: `${(activeCell.bbox[2] - activeCell.bbox[0]) * 100}%`,
-                          height: `${(activeCell.bbox[3] - activeCell.bbox[1]) * 100}%`,
-                          border: '2px solid #3b82f6',
-                          backgroundColor: 'rgba(59, 130, 246, 0.25)',
-                          borderRadius: '4px',
-                          boxShadow: '0 0 12px rgba(59, 130, 246, 0.6)',
-                          transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                          pointerEvents: 'none',
-                        }}
-                      />
+                    {activeRow.document_id ? (
+                      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                        <img
+                          src={`/api/documents/${activeRow.document_id}/preview/`}
+                          alt={`Preview of ${activeRow.filename}`}
+                          style={{
+                            width: '100%',
+                            height: 'auto',
+                            display: 'block',
+                            backgroundColor: '#fff',
+                          }}
+                          onError={(e) => {
+                            const target = e.currentTarget
+                            target.onerror = null
+                            target.src = `/api/documents/${activeRow.document_id}/thumb/`
+                          }}
+                        />
+                        {/* Animated Highlighting Bounding Box on top of the real document */}
+                        {activeCell?.bbox && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              left: `${activeCell.bbox[0] * 100}%`,
+                              top: `${activeCell.bbox[1] * 100}%`,
+                              width: `${(activeCell.bbox[2] - activeCell.bbox[0]) * 100}%`,
+                              height: `${(activeCell.bbox[3] - activeCell.bbox[1]) * 100}%`,
+                              border: '2px solid #3b82f6',
+                              backgroundColor: 'rgba(59, 130, 246, 0.3)',
+                              borderRadius: '4px',
+                              boxShadow: '0 0 12px rgba(59, 130, 246, 0.7)',
+                              transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                              pointerEvents: 'none',
+                            }}
+                          />
+                        )}
+                      </div>
+                    ) : (
+                      <div style={{ padding: '24px 20px', color: '#1e293b', fontSize: '0.72rem', fontFamily: 'monospace' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #0f172a', paddingBottom: '8px', marginBottom: '14px' }}>
+                          <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#0f172a' }}>OFFICIAL RECORD</span>
+                          <span style={{ color: '#64748b' }}>DOC-{activeRow.record_id}</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', opacity: 0.85 }}>
+                          <div>FILE: {activeRow.filename}</div>
+                          <div>STATUS: {activeRow.status}</div>
+                          <div>CONFIDENCE: {Math.round(activeRow.confidence_score * 100)}%</div>
+                        </div>
+                      </div>
                     )}
                   </div>
                 ) : (
