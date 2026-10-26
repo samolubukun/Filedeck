@@ -1,4 +1,5 @@
 import { useEffect, type ComponentType } from 'react'
+import { TitleBar } from './components/TitleBar'
 import { Sidebar } from './components/Sidebar'
 import { Header } from './components/Header'
 import { UploadModal } from './components/UploadModal'
@@ -78,14 +79,18 @@ export function App() {
   const Page = PAGES[currentNav]
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      <Sidebar />
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+      <TitleBar />
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        <Header />
-        <main style={{ flex: 1, padding: '32px 36px', maxWidth: '1440px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
-          <Page />
-        </main>
+      <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+        <Sidebar />
+
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+          <Header />
+          <main style={{ flex: 1, padding: '32px 36px', maxWidth: '1440px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
+            <Page />
+          </main>
+        </div>
       </div>
 
       <UploadModal isOpen={isUploadOpen} onClose={() => setUploadOpen(false)} onSuccess={refreshAll} />
